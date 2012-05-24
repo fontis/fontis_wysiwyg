@@ -1,0 +1,219 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Fontis WYSIWYG Editor Extension
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * @category   Fontis
+ * @package    Fontis_Wysiwyg
+ * @author     Peter Spiller
+ * @author     Lloyd Hazlett
+ * @copyright  Copyright (c) 2008 Fontis Pty. Ltd. (http://www.fontis.com.au)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config>
+    <tabs>
+        <fontis_extensions translate="label" module="fontis_wysiwyg">
+            <label>Fontis Extensions</label>
+            <sort_order>1000000</sort_order>
+        </fontis_extensions>
+    </tabs>
+    <sections>
+        <fontis_wysiwyg>
+            <label>WYSIWYG Editors</label>
+            <tab>fontis_extensions</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>1000000</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>0</show_in_store>
+            <groups>
+                <general translate="label" module="fontis_wysiwyg">
+                    <label>General Settings</label>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <editor_type translate="label">
+                            <label>Editor Type</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>fontis_wysiwyg/source_editortype</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </editor_type>
+                        <editable_areas translate="label">
+                            <label>Editable Areas</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>fontis_wysiwyg/source_editableareas</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </editable_areas>
+                        <editable_areas_custom translate="comment">
+                            <label></label>
+                            <frontend_model>fontis_wysiwyg_block_textareas</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <comment>Use this button to specify the CSS IDs of additonal textareas that should use the WYSIWYG editor.</comment>
+                        </editable_areas_custom>
+                        <enable_uploads translate="label">
+                            <label>Enable File Uploads</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </enable_uploads>
+                        <upload_path translate="label">
+                            <label>File Upload Path</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </upload_path>
+                    </fields>
+                </general>
+                <fckeditor>
+                    <label>FCKeditor Settings</label>
+                    <sort_order>2</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <language translate="label">
+                            <label>Language</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>fontis_wysiwyg/source_FCKLanguage</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </language>
+                        <toolbarset translate="label">
+                            <label>Toolbar Set</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>fontis_wysiwyg/source_FCKToolbarset</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </toolbarset>
+                        <skin translate="label">
+                            <label>Skin</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>fontis_wysiwyg/source_FCKSkin</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </skin>
+                        <usecustomtoolbarjs translate="label">
+                            <label>Use Custom Toolbar JavaScript</label>
+                            <comment>Select yes to enter your own custom toolbar JavaScript. If not, default values will be used.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </usecustomtoolbarjs>
+                        <customtoolbarjs translate="label">
+                            <label>Custom Toolbar JavaScript</label>
+                            <comment>Enter your custom toolbar JavaScript array here. This will be used if you select 'Custom' for the toolbar set.</comment>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </customtoolbarjs>
+                        <usecustomconfigjs translate="label">
+                            <label>Use Custom Configuration JavaScript</label>
+                            <comment>Select yes to enter your own custom configuration JavaScript. If not, default values will be used.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </usecustomconfigjs>
+                        <customconfigjs translate="label">
+                            <label>Custom Configuration JavaScript</label>
+                            <comment>Enter your custom configuration JavaScript here.</comment>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </customconfigjs>
+                    </fields>
+                </fckeditor>
+                <tinymce>
+                    <label>TinyMCE Settings</label>
+                    <sort_order>3</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <language translate="label">
+                            <label>Language</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>fontis_wysiwyg/source_TinyMCELanguage</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </language>
+                        <theme translate="label">
+                            <label>Theme</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>fontis_wysiwyg/source_TinyMCETheme</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </theme>
+                        <usecustomconfig translate="label">
+                            <label>Use Custom Configuration</label>
+                            <comment>Select yes to select plugins and enter your own custom configuration JavaScript. If not, the Plugins and Custom Configuration Javascript sections below will be ignored and default values will be used.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                        </usecustomconfig>
+                        <plugins translate="label">
+                            <label>Plugins</label>
+                            <comment>If any plugins selected here provide new toolbar buttons, they will need to be added using the appropriate theme_advanced_buttons option in the Custom Configuration JavaScript section below.</comment>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>fontis_wysiwyg/source_TinyMCEPlugins</source_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                        </plugins>
+                        <customconfigjs translate="label">
+                            <label>Custom Configuration JavaScript</label>
+                            <comment>Enter your custom configuration JavaScript here.</comment>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                        </customconfigjs>
+                        <!--<fckeditor_customtoolbarjs translate="label">
+                            <label>FCKeditor Custom Toolbar Set</label>
+                            <comment>Enter your custom toolbar JavaScript code here if you selected 'Custom' above.</comment>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </fckeditor_customtoolbarjs>-->
+                    </fields>
+                </tinymce>
+            </groups>
+        </fontis_wysiwyg>
+    </sections>
+</config>

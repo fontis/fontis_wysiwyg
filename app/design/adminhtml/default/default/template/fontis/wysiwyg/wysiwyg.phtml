@@ -1,0 +1,198 @@
+<?php
+/**
+ * Fontis WYSIWYG Editor Extension
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * @category   Fontis
+ * @package    Fontis_Wysiwyg
+ * @author     Peter Spiller
+ * @author     Lloyd Hazlett
+ * @copyright  Copyright (c) 2008 Fontis Pty. Ltd. (http://www.fontis.com.au)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+
+<?php
+    $editorType = Mage::getStoreConfig('fontis_wysiwyg/general/editor_type');
+
+    /* Get the base list of textarea IDs to add the editor to (chosen from the
+       multiselect). */
+    $editableAreas = Mage::getStoreConfig('fontis_wysiwyg/general/editable_areas');
+    /* Add on the other possible category textarea ID if we selected the 
+       first one. */
+    if(strpos($editableAreas, "_generaldescription") !== FALSE)
+    {
+        $editableAreas .= ",group_3description";
+    }
+
+    /* Add on any additional custom textarea IDs (specified using the Magento
+       'grid' control). */
+    $editableAreasCustom = @unserialize(Mage::getStoreConfig('fontis_wysiwyg/general/editable_areas_custom'));
+    if($editableAreasCustom) {
+        foreach($editableAreasCustom as $textarea) {
+            /* DON'T add blank IDs, or you'll wind up with textareas in very
+               odd places. */
+            if($textarea["id"] != "") {
+                if($editableAreas == "") {
+                    $editableAreas = $textarea["id"];
+                } else {
+                    $editableAreas .= ",".$textarea["id"];
+                }
+            }
+        }
+    }
+?>
+
+<?php if($editorType == 'tinymce') { ?>
+    <script type="text/javascript" src="<?php echo $this->getJsUrl() ?>fontis/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript">
+    Event.observe(window, 'load', function() {
+        var editable_areas = '<?php echo $editableAreas ?>';
+        <?php /* Remove the required-entry CSS class so Magento will allow the
+           contents of the editor to be submitted. */ ?>
+        editable_areas.split(',').each(function(dom_id) {
+            if($(dom_id)) {
+                var loopCheck = 0;
+                while($(dom_id).hasClassName('required-entry') && loopCheck < 10) {
+                    $(dom_id).removeClassName('required-entry');
+                    loopCheck += 1;
+                }
+            }
+        });
+        <?php /* Function that applies TinyMCE to any matching textareas. */ ?>
+        function applyTinyMCE() {
+            tinyMCE.init({
+                mode : "exact",
+                elements : editable_areas,
+                theme : "<?php echo Mage::getStoreConfig('fontis_wysiwyg/tinymce/theme'); ?>",
+                strict_loading_mode : true,
+                width: "640",
+                height: "400",
+                convert_urls: false,
+                content_css: "<?php echo $this->getSkinUrl() ?>tinymce_content.css",
+                language: "<?php echo Mage::getStoreConfig('fontis_wysiwyg/tinymce/language'); ?>",
+                theme_advanced_toolbar_location : "top",
+                theme_advanced_toolbar_align : "left",
+                theme_advanced_statusbar_location : "bottom",
+                relative_urls : false,
+                <?php if(Mage::getStoreConfig('fontis_wysiwyg/tinymce/usecustomconfig')) { ?>
+                    <?php if(Mage::getStoreConfig('fontis_wysiwyg/tinymce/plugins')) { ?>
+                plugins: "<?php echo Mage::getStoreConfig('fontis_wysiwyg/tinymce/plugins'); ?>",
+                    <?php } ?>
+                    <?php if(Mage::getStoreConfig('fontis_wysiwyg/tinymce/customconfigjs')) { ?>
+                <?php echo Mage::getStoreConfig('fontis_wysiwyg/tinymce/customconfigjs'); ?>,
+                    <?php } ?>
+                <?php } else if(Mage::getStoreConfig('fontis_wysiwyg/general/enable_uploads')) { ?>
+                plugins : "ibrowser",
+                theme_advanced_buttons3_add : "ibrowser",
+                <?php } ?>
+            });
+        };
+
+        <?php /* Apply TinyMCE via showTab event if it exists, otherwise load it now */ ?>
+        if ($("category_edit_form")) {
+            varienGlobalEvents.attachEventHandler('showTab', applyTinyMCE);
+        } else {
+            applyTinyMCE();
+        }
+    });
+    </script>
+
+
+<?php } else if($editorType == 'fckeditor') { ?>
+    <?php $toolbarSet = Mage::getStoreConfig('fontis_wysiwyg/fckeditor/toolbarset'); ?>
+    
+    <script type="text/javascript" src="<?php echo $this->getJsUrl() ?>fontis/fckeditor/fckeditor.js"></script>
+    <script type="text/javascript">
+    window.onload = function()
+    {
+        function applyFCKEditor() {
+            var editable_areas = '<?php echo $editableAreas ?>';
+            <?php /* Add FCKeditor to any matching textareas. */ ?>
+            editable_areas.split(',').each(function(dom_id) {
+                if($(dom_id)) {
+                    <?php /* Remove the required-entry CSS class so Magento will
+                             allow the contents of the editor to be submitted. */ ?>
+                    var loopCheck = 0;
+                    while($(dom_id).hasClassName('required-entry') && loopCheck < 10) {
+                        $(dom_id).removeClassName('required-entry');
+                        loopCheck += 1;
+                    }
+                    
+                    var fck = new FCKeditor(dom_id);
+                    <?php $language = Mage::getStoreConfig('fontis_wysiwyg/fckeditor/language'); ?>
+                    <?php if($language && $language != 'auto') { ?>
+                    fck.Config["AutoDetectLanguage"] = false;
+                    fck.Config["DefaultLanguage"] = "<?php echo Mage::getStoreConfig('fontis_wysiwyg/fckeditor/language') ?>";
+                    <?php } ?>
+
+                    fck.Config["CustomConfigurationsPath"] = "<?php echo $this->getJsUrl() ?>fontis/fckeditor/fontis_custom_config.php";
+                    fck.Config["SkinPath"] = "skins/<?php echo Mage::getStoreConfig('fontis_wysiwyg/fckeditor/skin') ?>/";
+                    fck.BasePath = "<?php echo $this->getJsUrl() ?>fontis/fckeditor/";
+                    fck.Width = '640';
+                    fck.Height = '450';
+                    
+                    <?php /* Set the toolbarset. */ ?>
+                    <?php if($toolbarSet) { ?>
+                        fck.ToolbarSet = '<?php echo $toolbarSet ?>';
+                    <?php } ?>
+                    
+                    fck.ReplaceTextarea();
+                }
+            });
+        }
+        
+        <?php /* Apply FCKeditor via showTab event if it exists, otherwise load it now */ ?>
+        if ($("category_edit_form")) {
+            varienGlobalEvents.attachEventHandler('showTab', applyFCKEditor);
+        } else {
+            applyFCKEditor();
+        }
+    }
+    </script>
+
+<?php } else if($editorType == 'ckeditor') { ?>
+    <script type="text/javascript" src="<?php echo $this->getJsUrl() ?>fontis/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript">
+    window.onload = function()
+    {
+        function applyCKEditor() {
+            var editable_areas = '<?php echo $editableAreas ?>';
+            <?php /* Add CKeditor to any matching textareas. */ ?>
+            editable_areas.split(',').each(function(dom_id) {
+                if($(dom_id)) {
+                    <?php /* Remove the required-entry CSS class so Magento will
+                             allow the contents of the editor to be submitted. */ ?>
+                    var loopCheck = 0;
+                    while($(dom_id).hasClassName('required-entry') && loopCheck < 10) {
+                        $(dom_id).removeClassName('required-entry');
+                        loopCheck += 1;
+                    }
+
+                    CKEDITOR.replace(dom_id, {
+                        width : 640,
+                        height: 350,
+                        protectedSource : ['(/{{[\s\S]*?}}/g)']                    
+                    });                    
+                }
+            });
+        }
+        
+        <?php /* Apply CKeditor via showTab event if it exists, otherwise load it now */ ?>
+        //if ($("category_edit_form")) {
+        //    varienGlobalEvents.attachEventHandler('showTab', applyCKEditor);
+        //} else {
+            applyCKEditor();
+        //}
+    }
+    </script>
+<?php } ?>

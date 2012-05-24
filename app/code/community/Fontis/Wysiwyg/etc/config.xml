@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Fontis WYSIWYG Editor Extension
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * @category   Fontis
+ * @package    Fontis_Wysiwyg
+ * @author     Peter Spiller
+ * @author     Lloyd Hazlett
+ * @copyright  Copyright (c) 2008 Fontis Pty. Ltd. (http://www.fontis.com.au)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config>
+    <modules>
+        <Fontis_Wysiwyg>
+            <version>1.1.0</version>
+        </Fontis_Wysiwyg>
+    </modules>
+    <global>
+        <helpers>
+            <fontis_wysiwyg>
+                <class>Fontis_Wysiwyg_Helper</class>
+            </fontis_wysiwyg>
+        </helpers>
+        <models>
+            <fontis_wysiwyg>
+                <class>Fontis_Wysiwyg_Model</class>
+            </fontis_wysiwyg>
+        </models>
+        <blocks>
+            <adminhtml>
+                <rewrite>
+                    <system_email_template_edit>Fontis_Wysiwyg_Block_Adminhtml_System_Email_Template_Edit</system_email_template_edit>
+                </rewrite>
+            </adminhtml>
+        </blocks>
+    </global>
+    <default>
+        <fontis_wysiwyg>
+            <general>
+                <editor_type>fckeditor</editor_type>
+                <editable_areas>description,short_description,page_content,block_content,_generaldescription,text,template_text</editable_areas>
+                <upload_path>media/upload</upload_path>
+            </general>
+            <fckeditor>
+                <language>auto</language>
+                <toolbarset>Default</toolbarset>
+                <skin>default</skin>
+                <usecustomtoolbarjs>0</usecustomtoolbarjs>
+                <customtoolbarjs><![CDATA[FCKConfig.ToolbarSets["Custom"] = [['Source', '-', 'Cut','Copy','Paste','PasteText','PasteWord'],
+    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+    '/',
+    ['Bold','Italic','Underline','StrikeThrough','-', 'OrderedList','UnorderedList'],
+    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
+    ['Image','Table','Rule','-','Link','Unlink','Anchor','-','FontFormat']
+    ];
+]]></customtoolbarjs>
+                <usecustomconfigjs>0</usecustomconfigjs>
+                <customconfigjs><![CDATA[FCKConfig.ProcessHTMLEntities = false;
+FCKConfig.FormatSource = false;
+FCKConfig.FormatOutput = false;
+FCKConfig.ProtectedSource.Add(/{{[\s\S]*?}}/g)]]></customconfigjs>
+            </fckeditor>
+            <tinymce>
+                <language>en</language>
+                <theme>advanced</theme>
+                <usecustomconfig>0</usecustomconfig>
+                <plugins>ibrowser,magento</plugins>
+                <customconfigjs><![CDATA[theme_advanced_buttons3_add : "ibrowser",
+magento_fix_quote: true,
+magento_fix_nl2br: true]]></customconfigjs>
+            </tinymce>
+        </fontis_wysiwyg>
+    </default>
+    <adminhtml>
+        <layout>
+            <updates>
+                <fontis_wysiwyg>
+                    <file>fontis_wysiwyg.xml</file>
+                </fontis_wysiwyg>
+            </updates>
+        </layout>
+        <acl>
+            <resources>
+                <all>
+                    <title>Allow Everything</title>
+                </all>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <fontis_wysiwyg>
+                                            <title>WYSIWYG Editors</title>
+                                        </fontis_wysiwyg>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+</config>
